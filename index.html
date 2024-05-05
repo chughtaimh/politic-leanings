@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guess the Animal's Political Leaning</title>
+<style>
+  body { font-family: Arial, sans-serif; padding: 20px; }
+  #animalName { font-size: 24px; font-weight: bold; }
+  #animalImg { width: 200px; height: auto; margin: 10px 0; }
+  #feedback { font-size: 20px; color: green; }
+  .button { padding: 10px 20px; font-size: 16px; cursor: pointer; margin: 5px; }
+</style>
+</head>
+<body>
+<h1>Guess the Animal's Political Leaning</h1>
+<div id="animalName"></div>
+<img id="animalImg" src="" alt="Animal Image">
+<div>
+  <button class="button" onclick="guess('Left')">Left-Leaning</button>
+  <button class="button" onclick="guess('Right')">Right-Leaning</button>
+</div>
+<button class="button" onclick="newAnimal()">New Animal</button>
+<div id="feedback"></div>
+
+<script>
+const animals = [
+  {type : 'Dog', pet : 'Labrador Retriever', leaning : 'Left', reason : 'They advocate for universal belly rubs.', url : 'https://tse4.mm.bing.net/th/id/OIP.JjSmqUiAQLHvv_fYqVx1vgHaE7?w=286&h=191&c=7&r=0&o=5&pid=1.7'},
+  {type : 'Dog', pet : 'German Shepherd', leaning : 'Right', reason : 'Disciplined and always ready for duty.', url : 'https://tse2.mm.bing.net/th/id/OIP._3TBS4t_estch-JDz1FhdwHaFj?w=258&h=194&c=7&r=0&o=5&pid=1.7'},
+  {type : 'Dog', pet : 'Golden Retriever', leaning : 'Left', reason : 'Everyone’s friend, no matter the party.', url : 'https://tse4.mm.bing.net/th/id/OIP.Cp9WOyl_8k9Xn8fKT4CaLAEyDM?w=282&h=188&c=7&r=0&o=5&pid=1.7'},
+  {type : 'Dog', pet : 'French Bulldog', leaning : 'Left', reason : 'Chic and urban, prefers cafes over hunting.', url : 'https://tse3.mm.bing.net/th/id/OIP.yO7KLpcTgM-03Kif9hRkqAHaG5?w=194&h=180&c=7&r=0&o=5&pid=1.7'},
+  {type : 'Dog', pet : 'Bulldog', leaning : 'Right', reason : 'Stubbornly set in their ways.', url : 'https://tse4.mm.bing.net/th/id/OIP.BruZm2LU_WIdoM-imitHOQHaFj?w=184&h=180&c=7&r=0&o=5&pid=1.7'},
+  {type : 'Dog', pet : 'Poodle', leaning : 'Left', reason : 'Highly educated and a fan of art galleries.', url : 'https://tse3.mm.bing.net/th/id/OIP.D11rjjo6qJ7q0TmApx2wSgHaLH?w=123&h=185&c=7&r=0&o=5&pid=1.7'},
+  {type : 'Dog', pet : 'Beagle', leaning : 'Right', reason : 'Loves a good old-fashioned hunt.', url : 'https://tse4.mm.bing.net/th/id/OIP.cVUrVofdAtZHFow1HINcwwHaE6?w=256&h=180&c=7&r=0&o=5&pid=1.7'},
+  {type : 'Dog', pet : 'Rottweiler', leaning : 'Right', reason : 'Strong and silent type, values security.', url : 'https://tse2.mm.bing.net/th/id/OIP.ehgfbUYFKRYTyeLN_11FTgHaFv?w=197&h=180&c=7&r=0&o=5&pid=1.7'},
+  {type : 'Dog', pet : 'Yorkshire Terrier', leaning : 'Left', reason : 'Small dog, big social justice warrior.', url : 'https://tse3.mm.bing.net/th/id/OIP.FjxXecrBUKewb6yboZGTYwHaEo?w=300&h=187&c=7&r=0&o=5&pid=1.7'},
+  {type : 'Dog', pet : 'Boxer', leaning : 'Right', reason : 'Sports enthusiast, likely into traditional roles.', url : 'https://tse4.mm.bing.net/th/id/OIP.bobvw5Dn7m9yzj1axW0ClAHaFj?w=186&h=180&c=7&r=0&o=5&pid=1.7'},
+  {type : 'Dog', pet : 'Siberian Husky', leaning : 'Left', reason : 'Free spirit, probably supports animal rights.', url : 'https://tse3.mm.bing.net/th/id/OIP.Co6wg2aFhQiTIi1MtgqbzAHaE6?w=298&h=198&c=7&r=0&o=5&pid=1.7'},
+  {type : 'Dog', pet : 'Dachshund', leaning : 'Right', reason : 'A bit conservative, prefers things low and order.', url : 'https://tse4.mm.bing.net/th/id/OIP.m_H0zv6r1-lCrD0CJO66uAHaFc?w=248&h=182&c=7&r=0&o=5&pid=1.7'},
+  {type : 'Dog', pet : 'Great Dane', leaning : 'Left', reason : 'Believes in being the bigger person.', url : 'https://tse2.mm.bing.net/th/id/OIP.BMhwqpCF5cnJ9EbjFCRZwwAAAA?w=170&h=180&c=7&r=0&o=5&pid=1.7'},
+  {type : 'Dog', pet : 'Doberman Pinscher', leaning : 'Right', reason : 'Appreciates military-like discipline.', url : 'https://tse2.mm.bing.net/th/id/OIP.9SOszNWc4ouHQxWBlLNIfQHaLH?w=121&h=182&c=7&r=0&o=5&pid=1.7'},
+  {type : 'Dog', pet : 'Australian Shepherd', leaning : 'Left', reason : 'Progressive herder, believes in corralling votes.', url : 'https://tse2.mm.bing.net/th/id/OIP.r4ACdCe-lpSwb4HjEFTPMQHaFj?w=250&h=186&c=7&r=0&o=5&pid=1.7'},
+  {type : 'Dog', pet : 'Cavalier King Charles Spaniel', leaning : 'Left', reason : 'All about love and acceptance.', url : 'https://tse4.mm.bing.net/th/id/OIP.Sn4Tfd1FuQVRYE0uMjrfRgHaGH?w=208&h=180&c=7&r=0&o=5&pid=1.7'},
+  {type : 'Dog', pet : 'Shih Tzu', leaning : 'Left', reason : 'Adores luxury and peaceful pampering sessions.', url : 'https://tse1.mm.bing.net/th/id/OIP.cRjUNSeUzMDSIcUNwK2CewHaLH?w=125&h=187&c=7&r=0&o=5&pid=1.7'},
+  {type : 'Dog', pet : 'Pembroke Welsh Corgi', leaning : 'Right', reason : 'Loyal to the crown and traditional values.', url : 'https://tse3.mm.bing.net/th/id/OIP.6eXaDFY2nvmjLFWEBX8yRgHaE8?w=279&h=186&c=7&r=0&o=5&pid=1.7'},
+  {type : 'Dog', pet : 'English Springer Spaniel', leaning : 'Right', reason : 'Old school and proud of it.', url : 'https://tse3.mm.bing.net/th/id/OIP.cBfPYST664-gOE8-IgO8UgHaEA?w=291&h=180&c=7&r=0&o=5&pid=1.7'},
+  {type : 'Dog', pet : 'Shetland Sheepdog', leaning : 'Left', reason : 'Intelligent and environmentally conscious.', url : 'https://tse4.mm.bing.net/th/id/OIP.-PcjIR1Kq2wPJIWhIUouNQHaD0?w=344&h=180&c=7&r=0&o=5&pid=1.7'},
+  {type : 'Dog', pet : 'Boston Terrier', leaning : 'Left', reason : 'City dweller with a taste for grassroots campaigns.', url : 'https://tse2.mm.bing.net/th/id/OIP.DnCEpvgo5m8zS6HGXNqwXwHaGZ?w=164&h=180&c=7&r=0&o=5&pid=1.7'},
+  {type : 'Dog', pet : 'Havanese', leaning : 'Left', reason : 'Cuban roots, but politically open and friendly.', url : 'https://tse4.mm.bing.net/th/id/OIP.o6km9aXxq43yXiNYsnhONwHaE4?w=262&h=180&c=7&r=0&o=5&pid=1.7'},
+  {type : 'Dog', pet : 'Bernese Mountain Dog', leaning : 'Left', reason : 'Mountain vibes, loves everyone equally.', url : 'https://tse2.mm.bing.net/th/id/OIP.4BOSCkR3qpYCFRxZb1dbWwHaE6?w=306&h=203&c=7&r=0&o=5&pid=1.7'},
+  {type : 'Dog', pet : 'Pug', leaning : 'Left', reason : 'Too chill to be anything but a lover, not a fighter.', url : 'https://tse1.mm.bing.net/th/id/OIP.YE0In1Wncpwl3psoJ6-hYAHaFj?w=188&h=180&c=7&r=0&o=5&pid=1.7'},
+  {type : 'Dog', pet : 'Maltese', leaning : 'Left', reason : 'The quintessential lapdog, enjoys luxury tax.', url : 'https://tse4.mm.bing.net/th/id/OIP.kQgJF89qM6Fc1PgJRX9t5gHaFZ?w=193&h=180&c=7&r=0&o=5&pid=1.7'},
+  {type : 'Dog', pet : 'Cocker Spaniel', leaning : 'Right', reason : 'Old-fashioned and enjoys classic country living.', url : 'https://tse1.mm.bing.net/th/id/OIP.f26pL8HKO4B4RbvA-zBeuwHaFH?w=215&h=180&c=7&r=0&o=5&pid=1.7'},
+  {type : 'Dog', pet : 'Chihuahua', leaning : 'Left', reason : 'Feisty and not afraid to stand up to the big dogs.', url : 'https://tse2.mm.bing.net/th/id/OIP.-Jx-biFLKeOX8oQS5WhOFwHaE8?w=260&h=180&c=7&r=0&o=5&pid=1.7'},
+  {type : 'Dog', pet : 'Border Collie', leaning : 'Left', reason : 'Too smart to not question authority.', url : 'https://tse4.mm.bing.net/th/id/OIP.OOHJqThY444iM4gw5BAWmwHaHa?w=166&h=180&c=7&r=0&o=5&pid=1.7'},
+  {type : 'Dog', pet : 'West Highland White Terrier', leaning : 'Right', reason : 'A bit territorial, likes their own space.', url : 'https://tse3.mm.bing.net/th/id/OIP.2oUPNrFjNvhbWsOawlhmGQHaHa?w=144&h=180&c=7&r=0&o=5&pid=1.7'},
+  {type : 'Dog', pet : 'Bichon Frise', leaning : 'Left', reason : "Loves everyone and everything, can't decide.", url : 'https://tse4.mm.bing.net/th/id/OIP.asRXVhvo0LhhWFuCUajazgHaJ4?w=129&h=180&c=7&r=0&o=5&pid=1.7'},
+  {type : 'Dog', pet : 'Akita', leaning : 'Right', reason : 'Respects loyalty and a strict hierarchy.', url : 'https://tse2.mm.bing.net/th/id/OIP.TBhHRoRRn-gU73CSX0ae5QHaE7?w=203&h=180&c=7&r=0&o=5&pid=1.7'},
+  {type : 'Dog', pet : 'Bloodhound', leaning : 'Right', reason : 'Old soul, sticks to traditional tracking methods.', url : 'https://tse1.mm.bing.net/th/id/OIP.Auq4N-dGqW5Rm0QzDx9ElQHaFj?w=250&h=187&c=7&r=0&o=5&pid=1.7'},
+  {type : 'Dog', pet : 'Saint Bernard', leaning : 'Left', reason : 'Always ready to help, a real socialist.', url : 'https://tse1.mm.bing.net/th/id/OIP.HUMMnw9Q3xiHhPMyjntQhAHaHa?w=182&h=182&c=7&r=0&o=5&pid=1.7'},
+  {type : 'Dog', pet : 'Bullmastiff', leaning : 'Right', reason : 'Watches over the house, not fond of strangers.', url : 'https://tse3.mm.bing.net/th/id/OIP.uY_yhRFlwOzetTB2J-fKRQHaLI?w=116&h=180&c=7&r=0&o=5&pid=1.7'},
+  {type : 'Dog', pet : 'Weimaraner', leaning : 'Left', reason : 'Artistic soul, probably enjoys modern art exhibits.', url : 'https://tse2.mm.bing.net/th/id/OIP.3xFPq3O-ZiR0wOyoTJOQagHaJ4?w=150&h=200&c=7&r=0&o=5&pid=1.7'},
+  {type : 'Dog', pet : 'Brittany Spaniel', leaning : 'Right', reason : 'Loves the great outdoors and traditional values.', url : 'https://tse3.mm.bing.net/th/id/OIP.ivjN3_AASIzSPiOyCvEvRAHaE8?w=263&h=180&c=7&r=0&o=5&pid=1.7'},
+  {type : 'Dog', pet : 'Newfoundland', leaning : 'Left', reason : 'Rescue dog that believes in helping all.', url : 'https://tse3.mm.bing.net/th/id/OIP._QhSQn4PDuL7yJtM68iwFAHaI-?w=140&h=180&c=7&r=0&o=5&pid=1.7'},
+  {type : 'Dog', pet : 'Collie', leaning : 'Left', reason : 'Sensitive and caring, a true humanitarian.', url : 'https://tse1.mm.bing.net/th/id/OIP.SQ80moCY2kvPaoABh5g12wHaE8?w=262&h=180&c=7&r=0&o=5&pid=1.7'},
+  {type : 'Dog', pet : 'Miniature Schnauzer', leaning : 'Right', reason : 'A bit yappy, likes to enforce the rules.', url : 'https://tse4.mm.bing.net/th/id/OIP.chw95RqU7JjUN4iOesHAmwHaLG?w=125&h=187&c=7&r=0&o=5&pid=1.7'},
+  {type : 'Dog', pet : 'Mastiff', leaning : 'Right', reason : 'Old guard, believes in protecting their own.', url : 'https://tse1.mm.bing.net/th/id/OIP.roQ9OBz7VF7xycMzp7qVAgHaC7?w=323&h=138&c=7&r=0&o=5&pid=1.7'},
+  {type : 'Dog', pet : 'Australian Cattle Dog', leaning : 'Right', reason : 'Works hard, plays hard, respects tradition.', url : 'https://tse2.mm.bing.net/th/id/OIP.egGFgbXJwyXrHuGWM_e3ZQHaEc?w=310&h=186&c=7&r=0&o=5&pid=1.7'},
+  {type : 'Dog', pet : 'Staffordshire Bull Terrier', leaning : 'Left', reason : 'Misunderstood but full of love.', url : 'https://tse2.mm.bing.net/th/id/OIP.4RakDsmH7N_If4EkM8WXEQHaHa?w=186&h=186&c=7&r=0&o=5&pid=1.7'},
+  {type : 'Dog', pet : 'American Bulldog', leaning : 'Right', reason : 'All-American dog with a strong work ethic.', url : 'https://tse3.mm.bing.net/th/id/OIP.yO7KLpcTgM-03Kif9hRkqAHaG5?w=196&h=183&c=7&r=0&o=5&pid=1.7'},
+  {type : 'Dog', pet : 'Vizsla', leaning : 'Left', reason : 'Active lifestyle, probably vegan and runs marathons.', url : 'https://tse4.mm.bing.net/th/id/OIP.WZyxD5JXqu0NLOCIM1U6MQHaHc?w=194&h=195&c=7&r=0&o=5&pid=1.7'},
+  {type : 'Dog', pet : 'Shiba Inu', leaning : 'Right', reason : 'Independent, not easily swayed by popular opinion.', url : 'https://tse3.mm.bing.net/th/id/OIP.qnnfHRvjSg7WcPYJsnWJlQHaHa?w=164&h=180&c=7&r=0&o=5&pid=1.7'},
+  {type : 'Dog', pet : 'Belgian Malinois', leaning : 'Right', reason : 'Special forces vibes, into defense and security.', url : 'https://tse3.mm.bing.net/th/id/OIP.pSbwcIpuHdTHZDQY4HFzcgHaLF?w=115&h=180&c=7&r=0&o=5&pid=1.7'},
+  {type : 'Dog', pet : 'Samoyed', leaning : 'Left', reason : 'Friendly to everyone, the epitome of a peacemaker.', url : 'https://tse4.mm.bing.net/th/id/OIP.jb0OJu0lQf1jhanspcPXTwHaJ4?w=132&h=180&c=7&r=0&o=5&pid=1.7'},
+  {type : 'Dog', pet : 'Alaskan Malamute', leaning : 'Left', reason : 'Loves the cold, probably against global warming.', url : 'https://tse2.mm.bing.net/th/id/OIP.sCpM9wCEMS5zqKQ2Ny8PZgHaE8?w=218&h=180&c=7&r=0&o=5&pid=1.7'},
+  {type : 'Dog', pet : 'Whippet', leaning : 'Left', reason : 'Lean and fast, believes in rapid change.', url : 'https://tse3.mm.bing.net/th/id/OIP.xM9eh7Kv1bgQ6WGHgZWplgHaG5?w=165&h=180&c=7&r=0&o=5&pid=1.7'},
+  {type : 'Dog', pet : 'Chow Chow', leaning : 'Right', reason : 'Majestic and aloof, keeps to traditional values.', url : 'https://tse4.mm.bing.net/th/id/OIP.3OWZlxUrZHwiloRT6QgMGgHaFX?w=260&h=188&c=7&r=0&o=5&pid=1.7'},
+  {type : 'Cat', pet : 'Maine Coon', leaning : 'Left', reason : 'Appreciates sustainable forestry and big, fluffy things.', url : 'https://tse2.mm.bing.net/th/id/OIP.2iONFkPOyUyLPul8MTI76gHaEo?w=267&h=180&c=7&r=0&o=5&pid=1.7'},
+  {type : 'Cat', pet : 'Siamese', leaning : 'Left', reason : 'Loves to talk about social issues... loudly.', url : 'https://tse4.mm.bing.net/th/id/OIP.BQAgIrhOOKOUYvwFXC_oiQHaJ8?w=140&h=188&c=7&r=0&o=5&pid=1.7'},
+  {type : 'Cat', pet : 'Persian', leaning : 'Right', reason : 'Prefers traditional luxury and long naps in quiet places.', url : 'https://tse2.mm.bing.net/th/id/OIP.VzBPaU-VKq234WF-Q4VxRwHaFj?w=278&h=208&c=7&r=0&o=5&pid=1.7'},
+  {type : 'Cat', pet : 'Ragdoll', leaning : 'Left', reason : 'Too laid back to not get along with everyone.', url : 'https://tse4.mm.bing.net/th/id/OIP.69AfQTfz82GtZ1wEvy5wdgHaHa?w=203&h=203&c=7&r=0&o=5&pid=1.7'},
+  {type : 'Cat', pet : 'Bengal', leaning : 'Left', reason : 'Adventurous spirit with a taste for the exotic.', url : 'https://tse2.mm.bing.net/th/id/OIP.8sbTEJrPfTI-F5Q2xXD-eAHaLI?w=119&h=180&c=7&r=0&o=5&pid=1.7'},
+  {type : 'Cat', pet : 'Sphynx', leaning : 'Left', reason : 'Open to new ideas, like going furless.', url : 'https://tse1.mm.bing.net/th/id/OIP.b8yIk5EiV0MeeDRBSG_VggHaIt?w=168&h=198&c=7&r=0&o=5&pid=1.7'},
+  {type : 'Cat', pet : 'British Shorthair', leaning : 'Right', reason : 'Stiff upper lip, traditional, and understated.', url : 'https://tse2.mm.bing.net/th/id/OIP.oP9ciINUuWzbfwbpM1UzzQHaE8?w=290&h=193&c=7&r=0&o=5&pid=1.7'},
+  {type : 'Cat', pet : 'Scottish Fold', leaning : 'Left', reason : 'Innovative but loves a good cuddle session.', url : 'https://tse2.mm.bing.net/th/id/OIP.KmVhR8ao1mnsyQcK2yDLEgHaE7?w=219&h=180&c=7&r=0&o=5&pid=1.7'},
+  {type : 'Cat', pet : 'Abyssinian', leaning : 'Left', reason : 'Curious and loves exploring new cultures.', url : 'https://tse1.mm.bing.net/th/id/OIP.fykRKzULnHitUHM8t9r1owHaIs?w=164&h=193&c=7&r=0&o=5&pid=1.7'},
+  {type : 'Cat', pet : 'Oriental', leaning : 'Left', reason : 'Artistic soul, appreciates the finer things in life.', url : 'https://tse2.mm.bing.net/th/id/OIP.eJzc7Lw6J6KLDm-g8-wbtgHaEX?w=275&h=180&c=7&r=0&o=5&pid=1.7'},
+  {type : 'Cat', pet : 'American Shorthair', leaning : 'Right', reason : 'The quintessential all-American cat.', url : 'https://tse4.mm.bing.net/th/id/OIP.qKoeS-fCIBWTJRdRGZYlogHaE8?w=228&h=180&c=7&r=0&o=5&pid=1.7'},
+  {type : 'Cat', pet : 'Siberian', leaning : 'Left', reason : 'Enjoys the wilderness and natural living.', url : 'https://tse4.mm.bing.net/th/id/OIP.tKcxBauUqnc8cADEE-2K0QDMEy?w=126&h=189&c=7&r=0&o=5&pid=1.7'},
+  {type : 'Cat', pet : 'Devon Rex', leaning : 'Left', reason : 'Quirky and against the mainstream.', url : 'https://tse3.mm.bing.net/th/id/OIP.bPd-lbWF9JjLvNqpEH_0NQHaEK?w=283&h=180&c=7&r=0&o=5&pid=1.7'},
+  {type : 'Cat', pet : 'Norwegian Forest Cat', leaning : 'Left', reason : 'Believes in mythology and ancient wisdom.', url : 'https://tse3.mm.bing.net/th/id/OIP.GZzkxiSmvbtCEDBra-HL3gHaEo?w=301&h=187&c=7&r=0&o=5&pid=1.7'},
+  {type : 'Cat', pet : 'Burmese', leaning : 'Left', reason : 'Social butterfly, believes in community support.', url : 'https://tse4.mm.bing.net/th/id/OIP.iJhlr4CirhLnL2VQP03zVgHaLL?w=135&h=204&c=7&r=0&o=5&pid=1.7'},
+  {type : 'Cat', pet : 'Himalayan', leaning : 'Right', reason : 'Enjoys a quiet, pampered life.', url : 'https://tse4.mm.bing.net/th/id/OIP.7FUJDc2hPH_CSk9-KF4E4wHaE7?w=229&h=180&c=7&r=0&o=5&pid=1.7'},
+  {type : 'Cat', pet : 'Exotic Shorthair', leaning : 'Right', reason : 'Likes a peaceful environment with minimal change.', url : 'https://tse3.mm.bing.net/th/id/OIP.abiE0Ysvol2AOovxTrBlZgHaE6?w=209&h=180&c=7&r=0&o=5&pid=1.7'},
+  {type : 'Cat', pet : 'Somali', leaning : 'Left', reason : 'Friendly and engaging, a diplomat at heart.', url : 'https://tse3.mm.bing.net/th/id/OIP.SUsJaLxmknOcDnjT0ak6ugHaE6?w=286&h=190&c=7&r=0&o=5&pid=1.7'},
+  {type : 'Cat', pet : 'Russian Blue', leaning : 'Left', reason : 'Discreet but progressive, loves peace.', url : 'https://tse4.mm.bing.net/th/id/OIP.PiVKJXESRwG2Sau-ni-aHgHaFH?w=277&h=191&c=7&r=0&o=5&pid=1.7'},
+  {type : 'Cat', pet : 'Cornish Rex', leaning : 'Left', reason : 'Energy-efficient with minimal shedding.', url : 'https://tse1.mm.bing.net/th/id/OIP.nWEea_84o-AD4_TfQtRqoAHaFb?w=259&h=190&c=7&r=0&o=5&pid=1.7'},
+  {type : 'Cat', pet : 'Turkish Angora', leaning : 'Left', reason : 'Loves history and conserving heritage.', url : 'https://tse2.mm.bing.net/th/id/OIP.uIswopwY5fnft4tazDOxYgHaK7?w=120&h=180&c=7&r=0&o=5&pid=1.7'},
+  {type : 'Cat', pet : 'Manx', leaning : 'Right', reason : 'Conservative, enjoys stability (and no tails).', url : 'https://tse1.mm.bing.net/th/id/OIP.1Gl562VVKccmtJEpkvTxCQHaF2?w=219&h=180&c=7&r=0&o=5&pid=1.7'},
+  {type : 'Cat', pet : 'Tonkinese', leaning : 'Left', reason : 'Great mediator, believes in equality.', url : 'https://tse4.mm.bing.net/th/id/OIP.61QtXJ9GF54rxx8oLImDjAHaE8?w=297&h=198&c=7&r=0&o=5&pid=1.7'},
+  {type : 'Cat', pet : 'Egyptian Mau', leaning : 'Left', reason : 'Cherishes its ancestry and modern freedoms.', url : 'https://tse1.mm.bing.net/th/id/OIP.Ujj1_ffeHeMlV1-pzreNoAHaIc?w=121&h=180&c=7&r=0&o=5&pid=1.7'},
+  {type : 'Cat', pet : 'Chartreux', leaning : 'Right', reason : 'Old soul, enjoys the quiet and traditional routines.', url : 'https://tse3.mm.bing.net/th/id/OIP.AP4KGbZV-FlP6wORJYgQVgHaHa?w=188&h=188&c=7&r=0&o=5&pid=1.7'},
+  {type : 'Bird', pet : 'Parakeet (Budgerigar)', leaning : 'Left', reason : 'Enjoys community living and chirping about social issues.', url : 'https://tse1.mm.bing.net/th/id/OIP.0XloZ2LsHKe9GcZ-TSUpVwHaEK?w=322&h=181&c=7&r=0&o=5&pid=1.7'},
+  {type : 'Bird', pet : 'Cockatiel', leaning : 'Left', reason : 'Loves to whistle a happy tune for equality.', url : 'https://tse4.mm.bing.net/th/id/OIP.bhnsgPlG6C4qzZ5fOG5NrgHaJ4?w=149&h=199&c=7&r=0&o=5&pid=1.7'},
+  {type : 'Bird', pet : 'African Grey Parrot', leaning : 'Left', reason : 'Intelligent and analytical, debates political theories.', url : 'https://tse2.mm.bing.net/th/id/OIP.jyxRK7bv8drKWd50HhTnqgHaE7?w=262&h=180&c=7&r=0&o=5&pid=1.7'},
+  {type : 'Bird', pet : 'Canary', leaning : 'Right', reason : 'Traditional, sings the same old songs.', url : 'https://tse4.mm.bing.net/th/id/OIP.QwEtPYuOOFnWQfWWNocfpwHaKe?w=123&h=180&c=7&r=0&o=5&pid=1.7'},
+  {type : 'Bird', pet : 'Macaw', leaning : 'Left', reason : 'Bright and showy, likes to make a big, colorful statement.', url : 'https://tse3.mm.bing.net/th/id/OIP.P5K9xquk3JQ4VQdHQa-pXAHaFj?w=258&h=194&c=7&r=0&o=5&pid=1.7'},
+  {type : 'Bird', pet : 'Lovebird', leaning : 'Left', reason : 'Believes in universal love and partnerships.', url : 'https://tse2.mm.bing.net/th/id/OIP.GQtvdL37XT2gDjJNvd62sAHaE8?w=294&h=196&c=7&r=0&o=5&pid=1.7'},
+  {type : 'Bird', pet : 'Finch', leaning : 'Right', reason : 'Prefers a quiet and orderly environment.', url : 'https://tse4.mm.bing.net/th/id/OIP.Umw-3T0I7t0Izu2-lrfifQHaE7?w=282&h=188&c=7&r=0&o=5&pid=1.7'},
+  {type : 'Bird', pet : 'Parrotlet', leaning : 'Left', reason : 'Small but mighty advocate for change.', url : 'https://tse2.mm.bing.net/th/id/OIP.GQtvdL37XT2gDjJNvd62sAHaE8?w=244&h=180&c=7&r=0&o=5&pid=1.7'},
+  {type : 'Bird', pet : 'Cockatoo', leaning : 'Left', reason : 'Loud, loves attention, and advocates passionately.', url : 'https://tse4.mm.bing.net/th/id/OIP.93K1KQup_a32tJbMWz2UxQHaNJ?w=115&h=180&c=7&r=0&o=5&pid=1.7'},
+  {type : 'Bird', pet : 'Pigeon', leaning : 'Right', reason : 'Old school and often misunderstood, sticks to the classics.', url : 'https://tse4.mm.bing.net/th/id/OIP.i1yhR58Z48m8MWqat0V1PQHaJo?w=156&h=202&c=7&r=0&o=5&pid=1.7'},
+  {type : 'Reptile', pet : 'Turtle', leaning : 'Right', reason : 'Conservative, takes it slow and steady.', url : 'https://tse3.mm.bing.net/th/id/OIP.cajsM54XDmtX5ZY2kUB8nAHaFj?w=210&h=180&c=7&r=0&o=5&pid=1.7'},
+  {type : 'Reptile', pet : 'Snake', leaning : 'Right', reason : 'Keeps to itself, likes a hands-off approach.', url : 'https://tse1.mm.bing.net/th/id/OIP.RqoI5QJ6BbEhPlld5y2a-AHaFj?w=226&h=180&c=7&r=0&o=5&pid=1.7'},
+  {type : 'Reptile', pet : 'Lizard', leaning : 'Right', reason : 'Enjoys basking under a heat lamp, not big on change.', url : 'https://tse2.mm.bing.net/th/id/OIP.B-M0D1q1okK6P0kQcGcRHAHaIq?w=143&h=180&c=7&r=0&o=5&pid=1.7'},
+  {type : 'Reptile', pet : 'Bearded Dragon', leaning : 'Right', reason : 'Relishes a solitary throne under a heat lamp.', url : 'https://tse3.mm.bing.net/th/id/OIP.W2E6nqDpUw4Ls-FBZSIJwgHaD4?w=265&h=180&c=7&r=0&o=5&pid=1.7'},
+  {type : 'Reptile', pet : 'Iguana', leaning : 'Left', reason : 'Green and believes in environmental causes.', url : 'https://tse1.mm.bing.net/th/id/OIP.RtMOLmPJxYLAvaFp7-U7SgHaJQ?w=159&h=199&c=7&r=0&o=5&pid=1.7'},
+  {type : 'Reptile', pet : 'Salamander', leaning : 'Left', reason : 'Thrives in fluid environments, supports amphibious rights.', url : 'https://tse2.mm.bing.net/th/id/OIP.GQtvdL37XT2gDjJNvd62sAHaE8?w=235&h=180&c=7&r=0&o=5&pid=1.7'},
+  {type : 'Reptile', pet : 'Scorpion', leaning : 'Right', reason : 'Independent and a bit standoffish in politics.', url : 'https://tse2.mm.bing.net/th/id/OIP.GQtvdL37XT2gDjJNvd62sAHaE8?w=240&h=180&c=7&r=0&o=5&pid=1.7'},
+  {type : 'Other', pet : 'Rabbit', leaning : 'Left', reason : 'Supports multiparty systems... and multiplying.', url : 'https://tse3.mm.bing.net/th/id/OIP.5-hLeijT1xCxJGRrkBETtQHaE8?w=283&h=189&c=7&r=0&o=5&pid=1.7'},
+  {type : 'Other', pet : 'Hamster', leaning : 'Left', reason : 'Nights on a spinning wheel, believes in getting nowhere fast.', url : 'https://tse2.mm.bing.net/th/id/OIP._6INrMzO90bb1ini31w2_wHaE8?w=220&h=180&c=7&r=0&o=5&pid=1.7'},
+  {type : 'Other', pet : 'Guinea Pig', leaning : 'Left', reason : 'Volunteers for everything, real community spirit.', url : 'https://tse3.mm.bing.net/th/id/OIP.Brna-n5JDHwlhHcXcaoXNgHaEK?w=271&h=180&c=7&r=0&o=5&pid=1.7'},
+  {type : 'Other', pet : 'Fish', leaning : 'Right', reason : 'Swims around issues, prefers not to make waves.', url : 'https://tse1.mm.bing.net/th/id/OIP.EjOKXKLPzzjMIwqKKkCs5AHaE7?w=246&h=180&c=7&r=0&o=5&pid=1.7'},
+  {type : 'Other', pet : 'Chinchilla', leaning : 'Left', reason : 'Enjoys social dust baths and soft revolutions.', url : 'https://tse1.mm.bing.net/th/id/OIP.1Zmm2eO2_Sqfv5ueUtWg4AHaFj?w=220&h=180&c=7&r=0&o=5&pid=1.7'},
+  {type : 'Other', pet : 'Hedgehog', leaning : 'Right', reason : 'Protects itself with spiky traditional values.', url : 'https://tse4.mm.bing.net/th/id/OIP.-6YVCYW0bI3Dg4p0VGSfUwHaEo?w=237&h=180&c=7&r=0&o=5&pid=1.7'},
+  {type : 'Other', pet : 'Hermit Crab', leaning : 'Right', reason : 'Prefers a mobile home, but with a conservative shell.', url : 'https://tse1.mm.bing.net/th/id/OIP.luYslbNnHQpGcmVvWQ_SdwHaFg?w=153&h=180&c=7&r=0&o=5&pid=1.7'},
+  {type : 'Other', pet : 'Axolotl', leaning : 'Left', reason : 'Regenerative and revolutionary in biology.', url : 'https://tse4.mm.bing.net/th/id/OIP.Oks0Ldab7hi3rLtR1QeyfAHaHB?w=177&h=180&c=7&r=0&o=5&pid=1.7'},
+  {type : 'Other', pet : 'Sugar Glider', leaning : 'Left', reason : 'Loves to glide from one social event to another.', url : 'https://tse3.mm.bing.net/th/id/OIP.rn7YKCZx4jnJI-xFvRSXewHaEK?w=245&h=180&c=7&r=0&o=5&pid=1.7'},
+  {type : 'Other', pet : 'Gecko', leaning : 'Right', reason : 'Sticks to traditional walls and old-school surfaces.', url : 'https://tse2.mm.bing.net/th/id/OIP.NHq_HbH2xmIVC-cXv2Ku4gHaFj?w=182&h=180&c=7&r=0&o=5&pid=1.7'},
+  {type : 'Other', pet : 'Rat', leaning : 'Left', reason : 'Resourceful, community-oriented, and misunderstood.', url : 'https://tse4.mm.bing.net/th/id/OIP.YhZzjy02mFSKzE8Ku2aIjgHaE8?w=258&h=180&c=7&r=0&o=5&pid=1.7'},
+  {type : 'Other', pet : 'Iguana', leaning : 'Left', reason : 'Green and believes in environmental causes.', url : 'https://tse3.mm.bing.net/th/id/OIP.RypGhPzJJ2qEnSwJIXosKwHaFj?w=198&h=180&c=7&r=0&o=5&pid=1.7'}
+];
+
+function randomAnimal() {
+  return animals[Math.floor(Math.random() * animals.length)];
+}
+
+let currentAnimal;
+
+function displayAnimal() {
+  currentAnimal = randomAnimal();
+  document.getElementById('animalName').textContent = currentAnimal.pet;
+  document.getElementById('animalImg').src = currentAnimal.url;
+  document.getElementById('feedback').textContent = '';
+}
+
+function guess(leaning) {
+  if (leaning === currentAnimal.leaning) {
+    document.getElementById('feedback').textContent = 'CORRECT! ' + currentAnimal.reason;
+  } else {
+    document.getElementById('feedback').textContent = 'WRONG! ' + currentAnimal.reason;
+  }
+}
+
+function newAnimal() {
+  displayAnimal();
+}
+
+window.onload = displayAnimal;
+</script>
+</body>
+</html>
