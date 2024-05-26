@@ -8,26 +8,28 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-      body {
-          font-family: 'Roboto', sans-serif;
-          display: flex;
-          flex-direction: column;
-          min-height: 100vh;
-      }
-
-      .main-content {
-          flex: 1;
-      }
-      .footer {
-          width: 100%;
-      }
-      #menu {
-          transform: translateX(100%); /* Initially hide the menu off-screen */
-      }
-
-      #menu.open {
-          transform: translateX(0); /* Slide the menu in */
-      }
+        body {
+            font-family: 'Roboto', sans-serif;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        .main-content {
+            flex: 1;
+        }
+        .footer {
+            width: 100%;
+        }
+        #menu {
+            transform: translateX(100%); /* Initially hide the menu off-screen */
+        }
+        #menu.open {
+            transform: translateX(0); /* Slide the menu in */
+        }
+        li.selected {
+            background-color: orange;
+            color: white;
+        }
     </style>
 </head>
 <body class="bg-gray-100 flex flex-col min-h-screen">
@@ -39,17 +41,17 @@
             </svg>
         </button>
     </header>
-    <!-- Add this inside the body, near the header -->
+
     <div id="menu" class="fixed right-0 top-0 bg-white shadow-md h-full w-64 transform translate-x-full transition-transform duration-300">
         <ul class="mt-16">
-            <li class="py-2 px-4 border-b"><a href="#" class="block text-gray-700">PETS</a></li>
-            <li class="py-2 px-4 border-b"><a href="#" class="block text-gray-700">BRANDS</a></li>
-            <li class="py-2 px-4 border-b"><a href="#" class="block text-gray-700">COLLEGE ROOMMATES</a></li>
-            <li class="py-2 px-4 border-b"><a href="#" class="block text-gray-700">HOLLYWOOD</a></li>
+            <li id="pets" class="py-2 px-4 border-b cursor-pointer bg-orange-500 text-white" onclick="selectMenu('pets')"><a href="#" class="block">PETS</a></li>
+            <li id="brands" class="py-2 px-4 border-b cursor-pointer" onclick="selectMenu('brands')"><a href="#" class="block text-gray-700">BRANDS</a></li>
+            <li id="roommates" class="py-2 px-4 border-b cursor-pointer" onclick="selectMenu('roommates')"><a href="#" class="block text-gray-700">COLLEGE ROOMMATES</a></li>
+            <li id="hollywood" class="py-2 px-4 border-b cursor-pointer" onclick="selectMenu('hollywood')"><a href="#" class="block text-gray-700">HOLLYWOOD</a></li>
         </ul>
     </div>
 
-    <main class="flex-grow flex flex-col items-center justify-center p-4">
+    <main class="main-content flex-grow flex flex-col items-center justify-center p-4">
         <div id="game-container" class="bg-white shadow-md rounded-lg p-6 w-full max-w-md">
             <div id="animal-name" class="text-2xl font-bold text-center mb-4">SHITZU</div>
             <div id="animal-image" class="bg-gray-200 h-48 w-full mb-4"></div>
@@ -694,24 +696,17 @@
             }
         };
 
+        const brands = { 
+            // insert brands here 
+        };
 
-        function loadNewAnimal() {
-            const animalNames = Object.keys(animals);
-            const randomAnimal = animalNames[Math.floor(Math.random() * animalNames.length)];
-            const animal = animals[randomAnimal];
+        const roommates = { 
+            // insert roommates here 
+        };
 
-            document.getElementById('animal-name').innerText = randomAnimal.toUpperCase();
-            document.getElementById('animal-image').style.backgroundImage = `url(${animal.img})`;
-            document.getElementById('animal-image').style.backgroundSize = 'cover';
-            document.getElementById('animal-image').style.backgroundPosition = 'center';
-
-            // Reset result and buttons
-            document.getElementById('buttons-container').style.display = 'flex';
-            const resultContainer = document.getElementById('result-container');
-            if (resultContainer) {
-                resultContainer.remove();
-            }
-        }
+        const celebs = { 
+            // insert celebs here 
+        };
 
         function checkAnswer(selectedLeaning) {
             const animalName = document.getElementById('animal-name').innerText.toLowerCase();
@@ -729,17 +724,86 @@
             document.getElementById('game-container').appendChild(resultContainer);
             document.getElementById('buttons-container').style.display = 'none';
         }
+
+        function hideMenu() {
+            const menu = document.getElementById('menu');
+            menu.classList.remove('open');
+        }
+
+        function selectMenu(option) {
+            const menu = document.getElementById('menu');
+            const gameText = document.querySelector('#game-container p');
+            const texts = {
+                'pets': "Your favorite pets have been harboring some concerning political views. Try to guess what they are.",
+                'brands': "Listen, we all know Lulu is problematic. Guess what wearing these brands says about your political views.",
+                'roommates': "You found them on Craigslist, so you assumed your roommates had some problematic views. Try to guess what they are.",
+                'hollywood': "Leslie Knope voted for who?!? Try to guess the concerning political takes of your favorite celebrities."
+            };
+
+            // Highlight selected menu item
+            document.querySelectorAll('#menu li').forEach(li => {
+                li.classList.remove('selected', 'bg-orange-500', 'text-white');
+            });
+            document.getElementById(option).classList.add('selected', 'bg-orange-500', 'text-white');
+
+            // Update the game text based on selection
+            gameText.textContent = texts[option];
+
+            // Update the current selection
+            window.currentSelection = option;
+
+            // Hide the menu
+            hideMenu();
+
+            // Load a new item based on the selection
+            loadNewAnimal();
+        }
+
+        function loadNewAnimal() {
+            const items = {
+                'pets': animals,
+                'brands': brands, 
+                'roommates': roommates, 
+                'hollywood': celebs 
+            };
+
+            const selectedItems = items[window.currentSelection];
+            const itemNames = Object.keys(selectedItems);
+            const randomItem = itemNames[Math.floor(Math.random() * itemNames.length)];
+            const item = selectedItems[randomItem];
+
+            document.getElementById('animal-name').innerText = randomItem.toUpperCase();
+            document.getElementById('animal-image').style.backgroundImage = `url(${item.img})`;
+            document.getElementById('animal-image').style.backgroundSize = 'cover';
+            document.getElementById('animal-image').style.backgroundPosition = 'center';
+
+            // Reset result and buttons
+            document.getElementById('buttons-container').style.display = 'flex';
+            const resultContainer = document.getElementById('result-container');
+            if (resultContainer) {
+                resultContainer.remove();
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', function () {
             const menuButton = document.querySelector('header button');
             const menu = document.getElementById('menu');
 
+            window.currentSelection = 'pets'; // default selection
+
             menuButton.addEventListener('click', function () {
                 menu.classList.toggle('open');
             });
-        });
 
-        // Load a random animal on page load
-        window.onload = loadNewAnimal;
+            document.addEventListener('click', function (event) {
+                if (!menu.contains(event.target) && !menuButton.contains(event.target)) {
+                    hideMenu();
+                }
+            });
+
+            // Initial load
+            loadNewAnimal();
+        });
     </script>
 </body>
 </html>
