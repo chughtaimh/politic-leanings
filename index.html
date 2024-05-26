@@ -8,14 +8,19 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body {
-            font-family: 'Roboto', sans-serif;
-        }
-        .footer {
-            position: absolute;
-            bottom: 0;
-            width: 100%;
-        }
+      body {
+          font-family: 'Roboto', sans-serif;
+          display: flex;
+          flex-direction: column;
+          min-height: 100vh;
+      }
+
+      .main-content {
+          flex: 1;
+      }
+      .footer {
+          width: 100%;
+      }
     </style>
 </head>
 <body class="bg-gray-100 flex flex-col min-h-screen">
