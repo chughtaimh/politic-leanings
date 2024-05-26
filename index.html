@@ -21,6 +21,13 @@
       .footer {
           width: 100%;
       }
+      #menu {
+          transform: translateX(100%); /* Initially hide the menu off-screen */
+      }
+
+      #menu.open {
+          transform: translateX(0); /* Slide the menu in */
+      }
     </style>
 </head>
 <body class="bg-gray-100 flex flex-col min-h-screen">
@@ -32,6 +39,15 @@
             </svg>
         </button>
     </header>
+    <!-- Add this inside the body, near the header -->
+    <div id="menu" class="fixed right-0 top-0 bg-white shadow-md h-full w-64 transform translate-x-full transition-transform duration-300">
+        <ul class="mt-16">
+            <li class="py-2 px-4 border-b"><a href="#" class="block text-gray-700">PETS</a></li>
+            <li class="py-2 px-4 border-b"><a href="#" class="block text-gray-700">BRANDS</a></li>
+            <li class="py-2 px-4 border-b"><a href="#" class="block text-gray-700">COLLEGE ROOMMATES</a></li>
+            <li class="py-2 px-4 border-b"><a href="#" class="block text-gray-700">HOLLYWOOD</a></li>
+        </ul>
+    </div>
 
     <main class="flex-grow flex flex-col items-center justify-center p-4">
         <div id="game-container" class="bg-white shadow-md rounded-lg p-6 w-full max-w-md">
@@ -713,6 +729,14 @@
             document.getElementById('game-container').appendChild(resultContainer);
             document.getElementById('buttons-container').style.display = 'none';
         }
+        document.addEventListener('DOMContentLoaded', function () {
+            const menuButton = document.querySelector('header button');
+            const menu = document.getElementById('menu');
+
+            menuButton.addEventListener('click', function () {
+                menu.classList.toggle('open');
+            });
+        });
 
         // Load a random animal on page load
         window.onload = loadNewAnimal;
